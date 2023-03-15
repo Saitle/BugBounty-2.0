@@ -1,0 +1,32 @@
+HTML code for simple clickjacking vuln
+
+<html>
+<h3>This is my web page.</h3>
+<iframe src="https://www.example.com" width="500" height="500"></iframe>
+<p>If this window is not blank, the iframe source URL can be framed!</p>
+</html>
+
+If headers like - X-Frame-Options: DENY, X-Frame-Options: SAMEORIGIN are present you can't hunt for clickjacking
+
+CSP mitigation which prevents UI redresssing
+Content-Security-Policy: frame-ancestors 'none';
+Content-Security-Policy: frame-ancestors 'self';
+
+Look for state changing requests like-
+Change password: bank.example.com/password_change
+Transfer balance: bank.example.com/transfer_money
+Unlink external account: bank.example.com/unlink
+
+Code for clickjacking
+<HTML>
+<head>
+<title>Clickjack test page</title>
+</head>
+<body>
+<p>Web page is vulnerable to clickjacking if the iframe is populated with the target
+page!</p>
+<iframe src="URL_OF_TARGET_PAGE" width="500" height="500"></iframe>
+</body>
+</html>
+
+[NOTE] Nowadays clickjacking vulns are not accepted by Bug Bounty platforms, but you can chain them with other vulns and create an impact.
