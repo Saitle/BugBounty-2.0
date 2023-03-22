@@ -2,11 +2,11 @@
 
 2) View dns info using viewdns
 
-3) Google dorks
+3) Tech stack fingerprinting using whatrun, wappalyzer, whatweb
 
-4) Github dorks (githound, gitdorks_go)
+4) Google & Github dorks (githound, gitdorks_go)
 
-5) Shodan search
+5) Shodan search and look for past vulnerability researches
 
 6) Pastebin and .git secrets
 
@@ -35,6 +35,14 @@ Try to locate /robots.txt , /crossdomain.xml /clientaccesspolicy.xml /sitemap.xm
 
 18) Identify waf using wafw00f
 
-19) Crawl using arjun, waybackurls, etc
+19) Crawl using arjun, waybackurls, hakcrawler
+
+20) Get all JS files (subjs, xnLinkFinder)
+
+21) Broken link hijacking (blc)
+
+22) Run automated scanner (nuclei)
+
+23) Test CORS (CORScanner, corsy)
 
 20) start hunting :)
