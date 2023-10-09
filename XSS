@@ -78,7 +78,8 @@ link.download = ''; document.body.appendChild(link); link.click();
 Redirecting User: <script>window.location =
 "https://www.youtube.com/watch?v=dQw4w9WgXcQ";</script>
 
-
+Escalating XSSs
+https://branch-delivery-7d5.notion.site/xss-dd37aad820b14535a3b3b418345d9d1f
 
 
 
