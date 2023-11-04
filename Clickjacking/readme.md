@@ -1,5 +1,3 @@
-Here's the provided text converted into proper Markdown format for a writeup:
-
 ### Simple Clickjacking Vulnerability
 
 Below is an example of HTML code demonstrating a simple clickjacking vulnerability:
